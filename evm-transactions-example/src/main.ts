@@ -1,25 +1,15 @@
-import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {processor} from './processor'
-import {Transaction} from './model'
+function extractData(evmLog: any): { id: bigint, owner: string, displayName: string, imageUrl: string} {
+if (evmLog.topics[0] === events.NewGravatar.topic) {
+return events.NewGravatar.decode(evmLog)
+}
+if (evmLog.topics[0] === events.UpdatedGravatar.topic) {
+return events.UpdatedGravatar.decode(evmLog)
+}
+import { TypeormDatabase } from '@subsquid/typeorm-store'
+import { decodeHex } from '@subsquid/evm-processor'
+import { events } from './abi/Gravity'
+import { Gravatar } from './model'
+import { processor, GRAVATAR_CONTRACT } from './processor'
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
-    let transactions: Transaction[] = []
-
-    for (let block of ctx.blocks) {
-        for (let transaction of block.transactions) {
-            transactions.push(
-                new Transaction({
-                    id: transaction.id,
-                    block: block.header.height,
-                    timestamp: new Date(block.header.timestamp),
-                    from: transaction.from || '0x',
-                    to: transaction.to || '0x',
-                    hash: transaction.hash,
-                    input: transaction.input,
-                })
-            )
-        }
-    }
-
-    await ctx.store.insert(transactions)
-})
+const gravatars: Map<string, Gravatar> = new 
