@@ -1,27 +1,31 @@
 {
-  "name": "squid",
-  "version": "0.0.0",
-  "private": true,
+  "name": "ens-subgraph",
+  "version": "1.0.2",
+  "repository": "https://github.com/ensdomains/ens-subgraph",
+  "license": "MIT",
   "scripts": {
-    "build": "rm -rf lib && tsc",
-    "update": "npx npm-check-updates --filter /subsquid/ --upgrade && npm i -f"
-  },
-  "dependencies": {
-    "@subsquid/archive-registry": "^3.0.0",
-    "@subsquid/evm-processor": "^1.4.0",
-    "@subsquid/evm-typegen": "^3.2.0",
-    "@subsquid/graphql-server": "^4.2.0",
-    "@subsquid/typeorm-migration": "^1.2.0",
-    "@subsquid/typeorm-store": "^1.2.0",
-    "dotenv": "^16.0.3",
-    "ethers": "^6.3.0",
-    "pg": "^8.8.0",
-    "typeorm": "^0.3.11"
+    "codegen": "graph codegen --output-dir src/types/",
+    "test": "graph test",
+    "setup": "yarn codegen && yarn create-local && yarn deploy-local",
+    "create-local": "graph create graphprotocol/ens --node http://127.0.0.1:8020",
+    "deploy-local": "graph deploy graphprotocol/ens --ipfs http://localhost:5001 --node http://127.0.0.1:8020/ --version-label 0.0.1",
+    "remove-local": "graph remove graphprotocol/ens --node http://127.0.0.1:8020",
+    "docker:setup": "yarn codegen && yarn docker:create-local && yarn docker:deploy-local",
+    "docker:create-local": "graph create graphprotocol/ens --node http://ens-app_graph-node_1:8020",
+    "docker:deploy-local": "graph deploy graphprotocol/ens --ipfs http://ens-app_ipfs_1:5001 --node http://ens-app_graph-node_1:8020/ --version-label 0.0.1",
+    "docker:remove-local": "graph remove graphprotocol/ens --node http://ens-app_graph-node_1:8020",
+    "build": "graph build",
+    "deploy": "graph deploy --network mainnet --product hosted-service ensdomains/ens",
+    "deploy:goerli": "graph deploy --network goerli --product hosted-service ensdomains/ensgoerli",
+    "deploy:sepolia": "graph deploy --network sepolia --studio enssepolia",
+    "watch-local": "graph deploy graphprotocol/ens --watch --debug --node http://127.0.0.1:8020/ --ipfs http://localhost:5001"
   },
   "devDependencies": {
-    "@subsquid/evm-typegen": "^3.2.0",
-    "@subsquid/typeorm-codegen": "^1.2.0",
-    "@types/node": "^18.11.18",
+    "@ensdomains/content-hash": "^2.5.3",
+    "@graphprotocol/graph-cli": "^0.51.2",
+    "@graphprotocol/graph-ts": "^0.31.0",
+    "assemblyscript": "^0.19.0",
+    "matchstick-as": "^0.5.2",
     "typescript": "^4.9.4"
   }
 }

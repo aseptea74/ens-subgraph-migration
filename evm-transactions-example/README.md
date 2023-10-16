@@ -1,35 +1,79 @@
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/subsquid-labs/transactions-example)
+# ENS Subgraph
 
+This Subgraph sources events from the ENS contracts. This includes the ENS registry, the Auction Registrar, and any resolvers that are created and linked to domains. The resolvers are added through dynamic data sources. More information on all of this can be found at [The Graph Documentation](https://thegraph.com/docs/developer/quick-start/).
 
-# Tracking transactions
+# Example Queries
 
-This sample squid tracks transactions to and from `vitalik.eth` address on Ethereum Mainnet.  
-One can use this example as a template for scaffolding a new squid project with [`sqd init`](https://docs.subsquid.io/squid-cli/):
+Here we have example queries, so that you don't have to type them in yourself eachtime in the graphiql playground:
 
-```bash
-sqd init my-new-squid --template https://github.com/subsquid-labs/transactions-example
-```
+```graphql
+{
+  domains {
+    id
+    labelName
+    labelhash
+    parent {
+      id
+    }
+    subdomains {
+      id
+    }
+    owner {
+      id
+    }
+    resolver {
+      id
+    }
+    ttl
+  }
+  resolvers {
+    id
+    address
+    domain {
+      id
+    }
+    events {
+      id
+      node
+      ... on AddrChanged {
+        a
+      }
+      ... on NameChanged {
+        name
+      }
+      ... on AbiChanged {
+        contentType
+      }
+      ... on PubkeyChanged {
+        x
+        y
+      }
+      ... on TextChanged {
+        indexedKey
+        key
+      }
+      ... on ContenthashChanged {
+        hash
+      }
+      ... on InterfaceChanged {
+        interfaceID
+        implementer
+      }
+      ... on AuthorisationChanged {
+        owner
+        target
+        isAuthorized
+      }
+    }
+  }
+  registrations(where: { labelName_not: null }, orderBy: expiryDate, orderDirection: asc, first: 10, skip: 0) {
+    expiryDate
+    labelName
+    domain{
+      name
+      labelName
+    }
+  }
+}
 
-For a full reference, check the [docs](https://docs.subsquid.io).
-
-## Prerequisites
-
-- Node v16.x
-- Docker
-- [Squid CLI](https://docs.subsquid.io/squid-cli/)
-
-## Running 
-
-Clone the repo and navigate to the root folder.
-
-```bash
-npm ci
-sqd build
-# start the database
-sqd up
-# starts a long-running ETL and blocks the terminal
-sqd process
-
-# starts the GraphQL API server at localhost:4350/graphql
-sqd serve
 ```

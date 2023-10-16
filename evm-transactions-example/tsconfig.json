@@ -1,20 +1,10 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2020",
-    "outDir": "lib",
-    "rootDir": "src",
-    "strict": true,
-    "resolveJsonModule": true,
-    "declaration": false,
-    "sourceMap": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "skipLibCheck": true
-  },
-  "include": ["src"],
-  "exclude": [
-    "node_modules"
+  "extends": "assemblyscript/std/assembly",
+  "include": [
+    "node_modules/@graphprotocol/graph-ts/index.ts",
+    "node_modules/@graphprotocol/graph-ts/helper-functions.ts",
+    "node_modules/@graphprotocol/graph-ts/global/global.ts",
+    "src/**/*.ts",
+    "tests/**/*.ts"
   ]
 }
